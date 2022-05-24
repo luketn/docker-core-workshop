@@ -1,47 +1,45 @@
-# docker-core-workshop
-What is docker at its core and how to build efficient docker containers.
+# Docker Core Workshop
 
-What is docker - discuss the Linux kernel, and the shared access to the single kernel from all docker containers on a host.
-
-What is docker not? A virtual machine! Even though it is possible to create things that look a lot like virtual machines, you really shouldn't. 
-They're huge and waste a lot of valuable resources, time and money.
-
-From SCRATCH! Demo how to create a usable Docker container from scratch, using a 
-statically compilable language. Build a hello world C program container. Look at
-the size.
-
-?Useful from SCRATCH. Demo creating something that is actually useful, e.g. a statically linked Golang
-program with an HTTP server.?  
-https://www.mongodb.com/docs/drivers/go/current/fundamentals/crud/read-operations/query-document/  
-https://www.sohamkamani.com/golang/json/ 
-https://zetcode.com/golang/http-server/  
-
-Java in docker. Limitation: Java depends on a few additional libraries beyond the kernel, and can't (easily) be statically linked. 
-So we need a minimal operating system, which has a package manager to install Java and its dependencies. Enter Alpine! 
-Create a minimal Java docker image, using Alpine and the Alpine JRE package.
-
+## Setup
+If you don't already have it, follow instructions to install Docker for Desktop:
+https://docs.docker.com/desktop/mac/install/
+You'll know it's working if you can run the following on the command line:  
 ```
-FROM alpine
-
-RUN apk upgrade --no-cache && \
-    apk add --no-cache openjdk17-jre-headless
-
-WORKDIR /opt/app
-
-# Add layers of files to the docker image. Order is significant, from least changing to most changing.
-ADD lib/ lib/
-ADD log4j.properties .
-ADD app.jar .
-
-# Hint to docker hosts about ports being used
-EXPOSE 8080/tcp
-
-# Java run statement
-CMD java -XX:+UseContainerSupport \
-         -XX:InitialRAMPercentage=40.0 \
-         -XX:MinRAMPercentage=20.0 \
-         -XX:MaxRAMPercentage=90.0 \
-         -Dlog4j.configuration=file:/opt/app/log4j.properties \
-         -cp /opt/app:/opt/app/*:/opt/app/lib/* \
-         com.mycodefu.EntryPoint
+docker run hello-world
 ```
+
+And see a successful result:
+```
+Hello from Docker!
+```
+
+This message shows that your installation appears to be working correctly.
+
+## Overview
+Docker is a containerization technology. It allows you to package an executable process and associated files in a container image, and then run that program on a host which can share its Linux kernel, memory, network, disk resources with the process. The host can execute one or more of these containerised processes in parallel and allocate an isolated subset of its resources to each.
+
+There are a few parts to it:
+
+### Docker Image
+A docker image is a really simple but beautiful thing. From the spec:  
+> "An Image is an ordered collection of root filesystem changes and the corresponding execution parameters for use within a container runtime."  
+https://github.com/moby/moby/blob/master/image/spec/v1.md
+
+This layering of changes to the file system is a key innovation, and allows for each layer to be separately cached and shared between containers.
+
+### Docker Daemon
+The Docker daemon is a program which runs on the host machine and manages the containers. It is responsible for creating, starting, stopping, and removing containers. 
+
+### Docker CLI
+The Docker CLI allows you to for managing the images which are used to create containers.
+
+
+## Workshop
+Enough chit-chat - let's build something!
+
+### Part 1 - Docker FROM scratch
+Go [here](1-docker-from-scratch/README.md) to build a bare-bones docker container image.
+
+### Part 2 - Java in Docker
+Let's jump to the other end of the pool and build something bigger. 
+Go [here](2-java-in-docker/README.md) to build a Java microservice in Docker.
