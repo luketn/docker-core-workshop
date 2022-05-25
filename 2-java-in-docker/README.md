@@ -29,12 +29,12 @@ The resulting built app is checked in to the repository.
 
 We can build the Java docker container like this:
 ```shell
-docker build -t quarkus-quick-start .
+docker build -t java-in-docker .
 ```
 
 And then run it like this:
 ```shell
-docker run -it --rm -p 8080:8080 quarkus-quick-start
+docker run -it --rm -p 8080:8080 java-in-docker
 ```
 
 Let's take a look at the Dockerfile and walk through each part to understand what it means and why use it...
