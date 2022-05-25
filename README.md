@@ -15,6 +15,11 @@ Hello from Docker!
 
 This message shows that your installation appears to be working correctly.
 
+You should also clone this repository to your local machine:
+```shell
+git clone https://github.com/luketn/docker-core-workshop.git
+```
+
 ## Overview
 Docker is a containerization technology. It allows you to package an executable process and associated files in a container image, and then run that program on a host which can share its Linux kernel, memory, network, disk resources with the process. The host can execute one or more of these containerised processes in parallel and allocate an isolated subset of its resources to each.
 
