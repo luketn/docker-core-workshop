@@ -1,30 +1,46 @@
+# Building Java Programs to run on Docker
+Java and containers are a great pairing - the typically long-lived run time of a container allows the Java Virtual Machine (JVM) which executes Java code to optimise itself over time and creates awesome performance for services that improves over time. 
 
-Java in docker. Limitation: Java depends on a few additional libraries beyond the kernel, and can't (easily) be statically linked.
-So we need a minimal operating system, which has a package manager to install Java and its dependencies. Enter Alpine!
-Create a minimal Java docker image, using Alpine and the Alpine JRE package.
+There are a few key considerations to running Java programs in a container though:  
+* The JVM depends on glibc, and can't be statically linked so it requires at least a minimal Linux distribution.
+* Size is still a key factor, so you should consider the dependencies you add and keep them minimal.
+* Consider the layered file system that a container image is composed of, and layer the image starting with the least-changing files and build up to the most-changing files. I.e. your code should go on the very last layer.
 
+I've followed the Getting Started guide to build a Quarkus Java microservice:  
+https://quarkus.io/guides/getting-started
+
+I already initialized project which was created using the quick start artifact:
+```shell
+mkdir quarkus
+cd quarkus
+mvn io.quarkus.platform:quarkus-maven-plugin:2.9.1.Final:create \
+    -DprojectGroupId=com.mycodefu \
+    -DprojectArtifactId=getting-started \
+    -Dextensions="resteasy-reactive"
+cd getting-started
 ```
-FROM alpine
 
-RUN apk upgrade --no-cache && \
-    apk add --no-cache openjdk17-jre-headless
-
-WORKDIR /opt/app
-
-# Add layers of files to the docker image. Order is significant, from least changing to most changing.
-ADD lib/ lib/
-ADD log4j.properties .
-ADD app.jar .
-
-# Hint to docker hosts about ports being used
-EXPOSE 8080/tcp
-
-# Java run statement
-CMD java -XX:+UseContainerSupport \
-         -XX:InitialRAMPercentage=40.0 \
-         -XX:MinRAMPercentage=20.0 \
-         -XX:MaxRAMPercentage=90.0 \
-         -Dlog4j.configuration=file:/opt/app/log4j.properties \
-         -cp /opt/app:/opt/app/*:/opt/app/lib/* \
-         com.mycodefu.EntryPoint
+Then built a deployable package with Maven:
+```shell
+./mvnw clean package
 ```
+
+The resulting built app is checked in to the repository.
+
+We can build the Java docker container like this:
+```shell
+docker build -t quarkus-quick-start .
+```
+
+And then run it like this:
+```shell
+docker run -it --rm -p 8080:8080 quarkus-quick-start
+```
+
+Let's take a look at the Dockerfile and walk through each part to understand what it means and why use it...
+
+**Further reading:**  
+
+Here's a great cheat-sheet to good practices building Java docker images:   
+https://snyk.io/blog/best-practices-to-build-java-containers-with-docker/
+

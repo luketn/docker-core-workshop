@@ -74,9 +74,6 @@ Most of the time when you are using containers you won't have this idealised 150
 If you use a statically compiled language like C++, Go, Rust etc... you can statically link your code to the Linux kernel and have a lean and mean container. If you do need an operating system, consider Alpine Linux as a good starting point for a lean foundation.
 
 
-Further reading:
-https://www.baeldung.com/linux/docker-containers-evolution
-
 Further exercise:
 Try building something useful from SCRATCH. e.g. a statically linked Golang program with an HTTP server connecting to a MongoDB backend database.  
 https://www.mongodb.com/docs/drivers/go/current/fundamentals/crud/read-operations/query-document/

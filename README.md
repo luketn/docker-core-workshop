@@ -33,6 +33,12 @@ The Docker daemon is a program which runs on the host machine and manages the co
 ### Docker CLI
 The Docker CLI allows you to for managing the images which are used to create containers.
 
+### Further Reading
+Excellent video on the fundamentals of Docker:  
+https://docs.docker.com/get-started/#what-is-a-container  
+Some history:  
+https://www.baeldung.com/linux/docker-containers-evolution
+
 
 ## Workshop
 Enough chit-chat - let's build something!
